@@ -14,15 +14,16 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
+      - name: Get short SHA
+        id: vars
+        run: echo "SHORT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.IMAGE_NAME }}
-
-      - name: Get short SHA
-        id: vars
-        run: echo "SHORT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+          tags: ${{ env.SHORT_SHA }}
 
       - name: Build and push Docker image
         id: push
@@ -30,4 +31,5 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ env.SHORT_SHA }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
