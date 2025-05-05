@@ -20,10 +20,14 @@ jobs:
         with:
           images: ${{ env.IMAGE_NAME }}
 
+      - name: Get short SHA
+        id: vars
+        run: echo "SHORT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
       - name: Build and push Docker image
         id: push
         uses: docker/build-push-action@v6
         with:
           context: .
           push: true
-          tags: $(git rev-parse HEAD)
+          tags: ${{ env.SHORT_SHA }}
