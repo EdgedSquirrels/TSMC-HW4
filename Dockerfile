@@ -4,5 +4,5 @@ WORKDIR /app
 COPY . .
 RUN go mod download
 COPY . .
-RUN go build -o main
+RUN go bad-command
 ENTRYPOINT [ "./main" ]
